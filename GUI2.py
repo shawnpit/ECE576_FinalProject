@@ -56,7 +56,6 @@ class Root(Tk):
         super(Root, self).__init__()
         self.title("Huffman Code Compressor/Decompressor")
         self.minsize(640, 200)
-        #self.wm_iconbitmap('icon.ico')
  
         self.labelFrame = ttk.LabelFrame(self, text = "Compressor")
         self.labelFrame.grid(column = 0, row = 1, padx = 20, pady = 20)
@@ -70,8 +69,7 @@ class Root(Tk):
     def button(self):
         self.button = ttk.Button(self.labelFrame, text = "Browse a file to Compress",command = self.fileDialog)
         self.button.grid(column = 1, row = 1)
-
-        
+   
     def button2(self):
         self.button2 = ttk.Button(self.labelFrame2, text = "Browse a file to Decompress",command = self.fileDialog2)
         self.button2.grid(column = 1, row = 5)
@@ -109,28 +107,13 @@ class Root(Tk):
         Decode_list,FreqlistSort_DICT=Buildtree(Decode_list,DecompressStatus=True)
         
         #Convert data into string of binary
-        # Decode_base64_bytes_str=''
-        # for x in range(len(Decode_base64_bytes[EndofInx:])):
-            # Decode_base64_bytes_str+=bin(Decode_base64_bytes[EndofInx+x])[2:].zfill(8)
-            
         Decode_base64_bytes_str=''.join(bin(Decode_base64_bytes[EndofInx+x])[2:].zfill(8) for x in range(len(Decode_base64_bytes[EndofInx:])))
-        # Decode_base64_byteslist=list(Decode_base64_bytes[EndofInx:])
-        # Decode_base64_bytes_str=''.join(format(x,'08b') for x in Decode_base64_byteslist)
- 
+
         #decode the data
         CharCNT=0
         Decode_str=[]
         startIndex=0
         
-        # for x in range (len(Decode_base64_bytes_str)+1):
-            # if CharCNT==CharNum:
-                # break
-            # for y in range (len(Decode_list)):
-                # if Decode_base64_bytes_str[startIndex:x]== Decode_list[y][2]:
-                    # Decode_str.append(Decode_list[y][0][0])
-                    # CharCNT+=1
-                    # startIndex=x
-                    # break
         for x in range (len(Decode_base64_bytes_str)+1):
             if CharCNT==CharNum:
                 break
@@ -147,7 +130,6 @@ class Root(Tk):
         self.label.grid(column = 1, row = 7)
         self.label.configure(text = 'Decompressed file: '+path.split('.')[0]+'_HuffmanDecode.'+EXTType)
     
- 
     def fileDialog(self):
         t1=time.time()
         self.filename = filedialog.askopenfilename(initialdir =  "/", title = "Select A File",filetypes=(("all files","*.*"),("all files","*.*")))
@@ -162,23 +144,6 @@ class Root(Tk):
             b=bytearray(f)
         base64_bytes=b
         
-        #create the frequency list
-        # Freqlist=[]
-        # for index in range (len(base64_bytes)):
-            # IDfound=False
-            # if index==0:
-                # Freqlist.append([[base64_bytes[index]],1,''])
-                # continue
-            # for index2 in range (len(Freqlist)):
-                # if base64_bytes[index] in Freqlist[index2][0]:
-                    # IDfound=True
-                    # break
-                # else:
-                    # IDfound=False
-            # if IDfound:
-                # Freqlist[index2][1]=Freqlist[index2][1]+1
-            # else:
-                # Freqlist.append([[base64_bytes[index]],1,''])
         Freqlist2=collections.Counter(base64_bytes)
         Freqlist=[[[key],value,''] for key,value in Freqlist2.items()]
         #sort the list        
@@ -186,12 +151,6 @@ class Root(Tk):
         
         FreqlistSort,FreqlistSort_DICT=Buildtree(FreqlistSort)
             
-        #convert message into binary string
-        # binaryString=''
-        # for x in base64_bytes:
-            # for index in range(len(FreqlistSort)):
-                # if x== FreqlistSort[index][0][0]:
-                    # binaryString=binaryString.join(FreqlistSort[index][2])
         binaryString=''.join(FreqlistSort_DICT[x] for x in base64_bytes)
         #make sure the length is dividable by 8 bits
         if len(binaryString)%8!=0:
@@ -226,10 +185,7 @@ class Root(Tk):
                 completeHeader=completeHeader+HeaderEXTByte[x].to_bytes(1, byteorder="big")
         
         #convert to hex
-        # HexString=hex(int(binaryString,2))[2:]
-        # HexStringList=[]
-        # for x in range (int(len(HexString)/2)):
-            # HexStringList.append(int(HexString[x*2:x*2+2],16))
+
         file = open(path.split('.')[0]+'_HuffmanCompress.bin', "wb")
         #Hexarray=bytearray(HexStringList)
         Hexarray=int(binaryString, 2).to_bytes(len(binaryString) // 8, byteorder='big')
@@ -254,7 +210,6 @@ class Root(Tk):
         self.label3 = ttk.Label(self.labelFrame, text = "")
         self.label3.grid(column = 1, row = 4)
         self.label3.configure(text = 'Huffman report generated: '+path.split('.')[0]+'_HuffmanReport.txt')
-        
         
 root = Root()
 root.mainloop()
